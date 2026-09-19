@@ -2,7 +2,8 @@ name: Google Drive'dan Excel Eşitleme
 
 on:
   schedule:
-    - cron: '0 * * * *' # Her saat başı çalışır.
+    - cron: '0 5-19 * * *'    # TR saatiyle 08:00 ile 22:00 arası her saat başı (08:00, 09:00... 22:00)
+    - cron: '30 19 * * *'     # TR saatiyle gece mesaisi kapanışı 22:30'da son kez çalışır
   workflow_dispatch: # Manuel olarak butona basıp çalıştırmanıza izin verir.
 
 jobs:
