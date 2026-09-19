@@ -2,9 +2,9 @@ name: Google Drive'dan Excel Eşitleme
 
 on:
   schedule:
-    - cron: '0 5-19 * * *'    # TR saatiyle 08:00 ile 22:00 arası her saat başı (08:00, 09:00... 22:00)
-    - cron: '30 19 * * *'     # TR saatiyle gece mesaisi kapanışı 22:30'da son kez çalışır
-  workflow_dispatch: # Manuel olarak butona basıp çalıştırmanıza izin verir.
+    - cron: '0 5-19 * * *'    # TR saatiyle 08:00 - 22:00 arası her saat başı
+    - cron: '30 19 * * *'     # TR saatiyle tam 22:30'da son kez çalışır
+  workflow_dispatch:
 
 jobs:
   sync:
@@ -15,7 +15,7 @@ jobs:
 
       - name: Excel Dosyasını İndir
         run: |
-          curl -L "https://docs.google.com/spreadsheets/d/17-3hDryOGSglFogJWpul2Fgug61pROKc/export?format=xlsx" -o "KURUM İÇİ ÇALIŞMA PROGRAMI.xlsx"
+          curl -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" -L "https://docs.google.com/spreadsheets/d/17-3hDryOGSglFogJWpul2Fgug61pROKc/export?format=xlsx" -o "KURUM İÇİ ÇALIŞMA PROGRAMI.xlsx"
 
       - name: Değişiklikleri Kaydet ve Sitenizi Güncelle
         run: |
@@ -23,8 +23,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add "KURUM İÇİ ÇALIŞMA PROGRAMI.xlsx"
           
-          # Dosyada değişiklik varsa Github'a kaydet (commit ve push)
           git diff --quiet && git diff --staged --quiet || (git commit -m "Google Drive'dan otomatik Excel güncellemesi" && git push)
           
-          # Web sitenize "yeni dosya geldi, kendini güncelle" sinyalini gönder
+          # Çalışma Programı web sitenize "yeni dosya geldi" sinyalini gönder
           curl -s -L "https://cesmebld.free.nf/calismaprg/api_excel_sync.php?key=123456789"
