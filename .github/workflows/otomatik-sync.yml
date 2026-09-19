@@ -16,9 +16,14 @@ jobs:
         run: |
           curl -L "https://docs.google.com/spreadsheets/d/17-3hDryOGSglFogJWpul2Fgug61pROKc/export?format=xlsx" -o "KURUM İÇİ ÇALIŞMA PROGRAMI.xlsx"
 
-      - name: Değişiklikleri Kaydet ve GitHub'a Yükle
+      - name: Değişiklikleri Kaydet ve Sitenizi Güncelle
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add "KURUM İÇİ ÇALIŞMA PROGRAMI.xlsx"
+          
+          # Dosyada değişiklik varsa Github'a kaydet (commit ve push)
           git diff --quiet && git diff --staged --quiet || (git commit -m "Google Drive'dan otomatik Excel güncellemesi" && git push)
+          
+          # Web sitenize "yeni dosya geldi, kendini güncelle" sinyalini gönder
+          curl -s -L "https://cesmebld.free.nf/calismaprg/api_excel_sync.php?key=123456789"
